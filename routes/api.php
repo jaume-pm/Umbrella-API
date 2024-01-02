@@ -9,6 +9,7 @@ use App\Http\Controllers\ConcertController;
 use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\UserController;
 
+use App\Http\Requests\StoreConcertRequest;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -27,15 +28,25 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::prefix('v1')->group(function () {
     Route::get('artists', [ArtistController::class, 'index']);
     Route::post('register', [AuthController::class, 'register']);
-    Route::get('concerts', [ConcertController::class, 'index']);
     Route::post('login', [AuthController::class, 'login']);
+    Route::get('concerts', [ConcertController::class, 'index']);
+    Route::get('pre', [ConcertController::class, 'pre']);
+    
 });
+
+
 
 Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
     Route::get('user/concerts', [ConcertController::class, 'indexUserConcerts']);
+    Route::post('concerts/store', [ConcertController::class,'store']);
+    Route::get('concerts/discounted', [ConcertController::class,'indexDiscountedConcerts']);
 });
 
+
 Route::middleware(['auth:sanctum','admin'])->prefix('v1')->group(function () {
-    Route::get('admin', [UserController::class,'index']);
+    Route::get('users', [UserController::class,'index']);
+    Route::post('coordinates', [ConcertController::class,'coordinates']);
+    
 });
+
 

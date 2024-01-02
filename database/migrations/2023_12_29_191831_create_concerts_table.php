@@ -20,8 +20,9 @@ return new class extends Migration
             $table->string('country');
             $table->decimal('latitude');
             $table->decimal('longitude');
-            $table->decimal('price',10,2);
-            $table->decimal('discount',2,2)->default('00.00');
+            $table->string('city');
+            $table->decimal('original_price',10,2)->default('100.00');
+            $table->decimal('discount')->default('00.00');
             $table->timestamps();
         });
     }

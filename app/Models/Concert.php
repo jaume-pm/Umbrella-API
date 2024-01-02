@@ -14,4 +14,18 @@ class Concert extends Model
     public function artists(){
         return $this->hasMany(Artist::class);
     }
+
+    protected $fillable = [
+        'max_capacity',
+        'is_outdoors',
+        'address',
+        'datetime',
+        'country',
+        'latitude',
+        'longitude',
+        'city',
+        'price',
+        'discount', // If needed
+    ];
+    
 }

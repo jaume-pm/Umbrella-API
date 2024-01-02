@@ -16,7 +16,7 @@ class User extends Authenticatable
     {
         return $this->role === 'admin';
     }
-    
+
     public function concerts(){
         return $this->hasMany(Concert::class);
     }

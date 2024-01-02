@@ -21,10 +21,10 @@ class ConcertFactory extends Factory
             "is_outdoors" => $this->faker->boolean,
             "address"=> $this->faker->address,
             "datetime"=> $this->faker->dateTime,
+            "city" => $this->faker->city,
             "country"=> $this->faker->country,
             "latitude"=> $this->faker->randomFloat(6,0,90),
             "longitude"=> $this->faker->randomFloat(6,0,90),
-            "price"=> $this->faker->randomFloat(2,40,200),
         ];
     }
 }

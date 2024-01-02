@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Models\User;
 
 class StoreConcertRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class StoreConcertRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return auth()->user()->isAdmin();
     }
 
     /**
@@ -22,7 +23,15 @@ class StoreConcertRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            /*
+            'max_capacity' => 'required|integer|min:1',
+            'is_outdoors' => 'required|boolean',
+            'address' => 'required|string|max:255',
+            'country' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'datetime' => 'required|date_format:Y-m-d H:i:s',
+            'original_price' => 'required|numeric|min:0',
+            */
         ];
     }
 }
