@@ -5,15 +5,27 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreArtistRequest;
 use App\Http\Requests\UpdateArtistRequest;
 use App\Models\Artist;
+use Illuminate\Http\Request;
 
 class ArtistController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $artists = Artist::all();
+        $query = Artist::query();
+
+        // Check if 'country' parameter is provided
+        if ($request->has('country')) {
+            $query->where('country', $request->country);
+        }
+        if ($request->has('name')) {
+            $query->where('name', $request->name);
+        }
+
+        $artists = $query->get();
+
         return response()->json($artists);
     }
 
