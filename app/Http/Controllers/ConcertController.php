@@ -8,6 +8,7 @@ use App\Models\Concert;
 use App\Services\GeocodeApi;
 use App\Services\OpenMeteoApi;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class ConcertController extends Controller
 {
@@ -25,12 +26,71 @@ class ConcertController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        self::updateConcertDiscounts();
-        $concerts = Concert::all();
-        return response()->json($concerts);
+    public function index(Request $request)
+{
+    self::updateConcertDiscounts(); // Update concert discounts first
+
+    $query = Concert::query();
+
+    // Capacity filters
+    if ($request->has('min_max_capacity')) {
+        $query->where('max_capacity', '>=', $request->min_max_capacity);
     }
+    if ($request->has('max_max_capacity')) {
+        $query->where('max_capacity', '<=', $request->max_max_capacity);
+    }
+
+    // Outdoors filter
+    if ($request->has('is_outdoors')) {
+        $query->where('is_outdoors', $request->is_outdoors);
+    }
+
+    // Datetime filters
+    if ($request->has('min_datetime')) {
+        $query->where('datetime', '>=', $request->min_datetime);
+    }
+    if ($request->has('max_datetime')) {
+        $query->where('datetime', '<=', $request->max_datetime);
+    }
+
+    // Location filters
+    if ($request->has('country')) {
+        $query->where('country', $request->country);
+    }
+    if ($request->has('city')) {
+        $query->where('city', $request->city);
+    }
+
+    // Price filters
+    if ($request->has('min_original_price')) {
+        $query->where('original_price', '>=', $request->min_original_price);
+    }
+    if ($request->has('max_original_price')) {
+        $query->where('original_price', '<=', $request->max_original_price);
+    }
+
+    // Discount filters
+    if ($request->has('min_discount')) {
+        $query->where('discount', '>=', $request->min_discount);
+    }
+    if ($request->has('max_discount')) {
+        $query->where('discount', '<=', $request->max_discount);
+    }
+
+    $concerts = $query->get();
+
+    // Calculated price filters
+    if ($request->has('min_price') || $request->has('max_price')) {
+        $concerts = $concerts->filter(function ($concert) use ($request) {
+            $calculatedPrice = $concert->original_price * (1 - $concert->discount / 100);
+            $minPrice = $request->min_price ?? 0;
+            $maxPrice = $request->max_price ?? PHP_INT_MAX;
+            return $calculatedPrice >= $minPrice && $calculatedPrice <= $maxPrice;
+        });
+    }
+
+    return response()->json($concerts);
+}
 
     public function indexUserConcerts()
     {
