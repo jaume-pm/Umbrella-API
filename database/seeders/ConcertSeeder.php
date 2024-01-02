@@ -20,7 +20,8 @@ class ConcertSeeder extends Seeder
             'country' => 'Spain',
             'datetime' => now()->addDays(1),
             'is_outdoors' => false,
-            'discount'=> 12,
+            'latitude' => 41.3638,
+            'longitude' => 2.1527,
         ]);
 
         Concert::factory()->create([
@@ -29,7 +30,8 @@ class ConcertSeeder extends Seeder
             'country' => 'France',
             'datetime' => now()->addDays(2),
             'is_outdoors' => false,
-            'discount'=> 12,
+            'latitude' => 44.8975,
+            'longitude' => -0.5619,
         ]);
 
         Concert::factory()->create([
@@ -38,7 +40,8 @@ class ConcertSeeder extends Seeder
             'country' => 'Romania',
             'datetime' => now()->addDays(3),
             'is_outdoors' => false,
-            'discount'=> 12,
+            'latitude' => 45.4263,
+            'longitude' => 28.0365,
         ]);
 
         // USA Venues
@@ -48,7 +51,8 @@ class ConcertSeeder extends Seeder
             'country' => 'United States',
             'datetime' => now()->addDays(4),
             'is_outdoors' => true,
-            'discount'=> 12,
+            'latitude' => 42.3662,
+            'longitude' => -71.0621,
         ]);
 
         Concert::factory()->create([
@@ -57,7 +61,8 @@ class ConcertSeeder extends Seeder
             'country' => 'United States',
             'datetime' => now()->addDays(5),
             'is_outdoors' => true,
-            'discount'=> 12,
+            'latitude' => 25.7814,
+            'longitude' => -80.1870,
         ]);
 
         // Locations likely to experience rain in early January
@@ -67,17 +72,10 @@ class ConcertSeeder extends Seeder
             'country' => 'Brazil',
             'datetime' => now()->addDays(1),
             'is_outdoors' => true,
-            'discount'=> 12,
+            'latitude' => -22.9122,
+            'longitude' => -43.2302,
         ]);
 
-        Concert::factory()->create([
-            'address' => 'Jl Pintu Satu Senayan',
-            'city' => 'Jakarta',
-            'country' => 'Indonesia',
-            'datetime' => now()->addDays(3),
-            'is_outdoors' => true,
-            'discount'=> 12,
-        ]);
 
         Concert::factory()->create([
             'address' => '9 Stadium Dr',
@@ -85,7 +83,8 @@ class ConcertSeeder extends Seeder
             'country' => 'Singapore',
             'datetime' => now()->addDays(2),
             'is_outdoors' => true,
-            'discount'=> 12,
+            'latitude' => 1.3025,
+            'longitude' => 103.8754,
         ]);
 
         // Concert in Donald, VIC, Australia
@@ -95,7 +94,18 @@ class ConcertSeeder extends Seeder
             'country' => 'Australia',
             'datetime' => Carbon::create(2024, 1, 2, 8, 0, 0, 'GMT'),
             'is_outdoors' => true,
-            'discount'=> 12,
+            'latitude' => -36.375,
+            'longitude' => 143.0,
+        ]);
+
+        Concert::factory()->create([
+            'address' => 'Jl Pintu Satu Senayan',
+            'city' => 'Jakarta',
+            'country' => 'Indonesia',
+            'datetime' => now()->addDays(3),
+            'is_outdoors' => true,
+            'latitude' => -6.2215,
+            'longitude' => 106.8034,
         ]);
     }
 }

@@ -28,11 +28,9 @@ class OpenMeteoApi
             $precipitation = array_slice($precipitationData, $closestDatetimeIndex, 4, true);
 
             $maxPrecipitation = max($precipitation);
-            //return $maxPrecipitation;
         }
         else {
-            $maxPrecipitation = 77;
-            //return $precipitation;
+            $maxPrecipitation = 0;
         }
         return  $maxPrecipitation;
 

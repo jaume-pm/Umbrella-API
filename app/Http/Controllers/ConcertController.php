@@ -16,7 +16,7 @@ class ConcertController extends Controller
         $concerts = Concert::all();
         foreach ($concerts as $concert){
         // Call the getPrecipitation method from OpenMeteoApi
-        $precipitation = OpenMeteoApi::getDiscount($concert);
+        $precipitation = OpenMeteoApi::getPrecipitation($concert);
         }
 
     // Return the result from getPrecipitation
