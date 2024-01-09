@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreConcertArtistRequest;
 use App\Http\Requests\StoreConcertRequest;
 use App\Http\Requests\UpdateConcertRequest;
 use App\Models\Concert;
+use App\Models\Artist;
 use App\Services\GeocodeApi;
 use App\Services\OpenMeteoApi;
 use Carbon\Carbon;
@@ -13,16 +15,7 @@ use Illuminate\Http\Request;
 class ConcertController extends Controller
 {
 
-    public function pre(){
-        $concerts = Concert::all();
-        foreach ($concerts as $concert){
-        // Call the getPrecipitation method from OpenMeteoApi
-        $precipitation = OpenMeteoApi::getPrecipitation($concert);
-        }
 
-    // Return the result from getPrecipitation
-    return response()->json($precipitation);
-    }
     /**
      * Display a listing of the resource.
      */
@@ -79,6 +72,14 @@ class ConcertController extends Controller
 
     $concerts = $query->get();
 
+    $concerts = $concerts->map(function ($concert) {
+        $concert->setRelation('artists', $concert->artists->map(function ($artist) {
+            unset($artist->pivot);
+            return $artist;
+        }));
+        return $concert;
+    });
+
     // Calculated price filters
     if ($request->has('min_price') || $request->has('max_price')) {
         $concerts = $concerts->filter(function ($concert) use ($request) {
@@ -88,7 +89,6 @@ class ConcertController extends Controller
             return $calculatedPrice >= $minPrice && $calculatedPrice <= $maxPrice;
         });
     }
-
     return response()->json($concerts);
 }
 
@@ -116,12 +116,6 @@ class ConcertController extends Controller
 
         $coordinates = GeocodeApi::getCoordinates($fullAddress);
         return response()->json($coordinates);
-    }
-
-    public function indexDiscountedConcerts()
-    {
-        $updatedConcerts = Concert::all();
-        return response()->json($updatedConcerts);
     }
 
     private function updateConcertDiscounts(){
@@ -189,6 +183,25 @@ class ConcertController extends Controller
             return response()->json([
                 'error' => $coordinates['error'] ?? 'Unknown error',
             ], 422);
+        }
+    }
+
+    public function addArtist(StoreConcertArtistRequest $request) {
+        $artistId = $request->artist_id;
+        $concertId = $request->concert_id;
+        $concert = Concert::findOrFail($concertId);
+    
+        $artist = Artist::find($artistId);
+    
+        if ($concert && $artist) {
+            $concert->artists()->attach($artist->id);
+            return response()->json([
+                'message' => 'Artist added successfully to the concert',
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'Artist added successfully to the concert',
+            ]);
         }
     }
 

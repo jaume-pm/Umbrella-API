@@ -26,26 +26,21 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::prefix('v1')->group(function () {
-    Route::get('artists', [ArtistController::class, 'index']);
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
-    Route::get('concerts', [ConcertController::class, 'index']);
-    Route::get('pre', [ConcertController::class, 'pre']);
-    
 });
-
-
 
 Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
     Route::get('user/concerts', [ConcertController::class, 'indexUserConcerts']);
-    Route::post('concerts/store', [ConcertController::class,'store']);
-    Route::get('concerts/discounted', [ConcertController::class,'indexDiscountedConcerts']);
+    Route::get('concerts', [ConcertController::class, 'index']);
+    Route::get('artists', [ArtistController::class, 'index']);
+    Route::patch('update_balance', [UserController::class,'updateBalance']);
 });
 
 
 Route::middleware(['auth:sanctum','admin'])->prefix('v1')->group(function () {
-    Route::get('users', [UserController::class,'index']);
-    Route::post('coordinates', [ConcertController::class,'coordinates']);
+    Route::post('concerts', [ConcertController::class,'store']);
+    Route::post('concerts/artist', [ConcertController::class,'addArtist']);
     
 });
 

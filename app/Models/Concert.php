@@ -12,8 +12,10 @@ class Concert extends Model
         return $this->belongsToMany(User::class);
     }
     public function artists(){
-        return $this->hasMany(Artist::class);
+        return $this->belongsToMany(Artist::class);
     }
+
+    protected $hidden = ['created_at', 'updated_at'];
 
     protected $fillable = [
         'max_capacity',
@@ -25,7 +27,7 @@ class Concert extends Model
         'longitude',
         'city',
         'price',
-        'discount', // If needed
+        'discount',
     ];
     
 }

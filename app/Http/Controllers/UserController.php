@@ -14,4 +14,11 @@ class UserController extends Controller
         $users = User::all();
         return response()->json($users);
     }
+
+    public function updateBalance(Request $request){
+        $user = auth()->user();
+        $newBalance = $user->balance + $request->balance;
+        $user->update(['balance' => $newBalance]);
+        return response()->json(["new_balance", $newBalance], 200);
+    }
 }
