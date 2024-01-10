@@ -15,6 +15,14 @@ use Illuminate\Http\Request;
 class ConcertController extends Controller
 {
 
+    public function buyConcert(Request $request){
+        $concertId = $request->concert_id;
+        $concert = Concert::findOrFail($concertId);
+        $user = auth()->user();
+        $concert->users()->attach($user->id);
+        return response()->json();
+    }
+
 
     /**
      * Display a listing of the resource.

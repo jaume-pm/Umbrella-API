@@ -35,13 +35,13 @@ Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
     Route::get('concerts', [ConcertController::class, 'index']);
     Route::get('artists', [ArtistController::class, 'index']);
     Route::patch('update_balance', [UserController::class,'updateBalance']);
+    Route::post('concerts/buy', [ConcertController::class,'buyConcert']);
 });
 
 
 Route::middleware(['auth:sanctum','admin'])->prefix('v1')->group(function () {
     Route::post('concerts', [ConcertController::class,'store']);
     Route::post('concerts/artist', [ConcertController::class,'addArtist']);
-    
 });
 
 
