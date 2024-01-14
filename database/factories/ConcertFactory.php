@@ -17,6 +17,7 @@ class ConcertFactory extends Factory
     public function definition(): array
     {
         return [
+            "title"=> $this->faker->sentence,
             "max_capacity"=> $this->faker->numberBetween(1000,100000),
             "is_outdoors" => $this->faker->boolean,
             "address"=> $this->faker->address,

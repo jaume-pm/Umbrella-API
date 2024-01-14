@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUserRequest;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -10,19 +11,8 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
+    public function register(StoreUserRequest $request)
     {
-        $validator = validator($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-            'balance' => 'required|numeric', // Add validation for the balance field
-        ]);
-    
-        if ($validator->fails()) {
-            return response()->json(['message' => $request->all()], 422);
-        }
-    
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
@@ -32,7 +22,7 @@ class AuthController extends Controller
     
             $token = $user->createToken('auth_token')->plainTextToken;
     
-            return response()->json(['token' => $token], 201);
+            return response()->json(['token' => $token, 'role' => 'user'], 200);
     }
     
 
@@ -47,8 +37,9 @@ class AuthController extends Controller
             if (Auth::attempt($credentials)) {
                 $user = $request->user();
                 $token = $user->createToken('auth_token')->plainTextToken;
+                $role = $user->role;
 
-                return response()->json(['token' => $token], 200);
+                return response()->json(['token' => $token, 'role' => $role], 200);
             } else {
                 throw ValidationException::withMessages(['message' => 'Invalid credentials']);
             }

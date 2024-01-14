@@ -18,7 +18,7 @@ class User extends Authenticatable
     }
 
     public function concerts(){
-        return $this->hasMany(Concert::class);
+        return $this->belongsToMany(Concert::class);
     }
 
     /**

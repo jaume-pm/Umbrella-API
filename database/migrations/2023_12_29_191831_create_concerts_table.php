@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('concerts', function (Blueprint $table) {
             $table->id();
             $table->integer('max_capacity');
+            $table->string('title');
             $table->boolean('is_outdoors');
             $table->string('address');
             $table->dateTime('datetime');
@@ -21,7 +22,7 @@ return new class extends Migration
             $table->decimal('latitude');
             $table->decimal('longitude');
             $table->string('city');
-            $table->decimal('original_price',10,2)->default('100.00');
+            $table->decimal('original_price',10,2)->default('200.00');
             $table->decimal('discount')->default('00.00');
             $table->timestamps();
         });

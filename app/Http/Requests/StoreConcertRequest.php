@@ -23,6 +23,7 @@ class StoreConcertRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'title' => 'required|string|max:255',
             'max_capacity' => 'required|integer|min:1',
             'is_outdoors' => 'required|boolean',
             'address' => 'required|string|max:255',

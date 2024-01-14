@@ -15,6 +15,7 @@ class ConcertSeeder extends Seeder
     {
         // European Venues
         Concert::factory()->create([
+            'title' => 'Barcelona Nit Musical',
             'address' => 'Passeig Olímpic 5-7',
             'city' => 'Barcelona',
             'country' => 'Spain',
@@ -25,6 +26,7 @@ class ConcertSeeder extends Seeder
         ]);
 
         Concert::factory()->create([
+            'title' => 'Bordeaux Rhythmic Rendezvous',
             'address' => 'Cours Jules Ladoumegue',
             'city' => 'Bordeaux',
             'country' => 'France',
@@ -35,6 +37,7 @@ class ConcertSeeder extends Seeder
         ]);
 
         Concert::factory()->create([
+            'title' => 'Galați Groove Gala',
             'address' => 'Str Portului 2',
             'city' => 'Galați',
             'country' => 'Romania',
@@ -46,6 +49,7 @@ class ConcertSeeder extends Seeder
 
         // USA Venues
         Concert::factory()->create([
+            'title' => 'Boston Harmonic Hike',
             'address' => '100 Legends Way',
             'city' => 'Boston',
             'country' => 'United States',
@@ -56,6 +60,7 @@ class ConcertSeeder extends Seeder
         ]);
 
         Concert::factory()->create([
+            'title' => 'Miami Melodic Madness',
             'address' => '601 Biscayne Blvd',
             'city' => 'Miami',
             'country' => 'United States',
@@ -67,6 +72,7 @@ class ConcertSeeder extends Seeder
 
         // Locations likely to experience rain in early January
         Concert::factory()->create([
+            'title' => 'Rio de Janeiro Rainforest Rhapsody',
             'address' => 'Rua Prof Eurico Rabelo Maracanã',
             'city' => 'Rio de Janeiro',
             'country' => 'Brazil',
@@ -78,6 +84,7 @@ class ConcertSeeder extends Seeder
 
 
         Concert::factory()->create([
+            'title' => 'Singapore Sonic Soiree',
             'address' => '9 Stadium Dr',
             'city' => 'Singapore',
             'country' => 'Singapore',
@@ -89,6 +96,7 @@ class ConcertSeeder extends Seeder
 
         // Concert in Donald, VIC, Australia
         Concert::factory()->create([
+            'title' => 'Down Under Downbeat Delight',
             'address' => '25-27 Blair St',
             'city' => 'Donald',
             'country' => 'Australia',
@@ -99,6 +107,7 @@ class ConcertSeeder extends Seeder
         ]);
 
         Concert::factory()->create([
+            'title' => 'Jakarta Music Festival',
             'address' => 'Jl Pintu Satu Senayan',
             'city' => 'Jakarta',
             'country' => 'Indonesia',

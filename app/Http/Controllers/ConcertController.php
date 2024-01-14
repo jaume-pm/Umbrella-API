@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BuyConcertTicketRequest;
 use App\Http\Requests\StoreConcertArtistRequest;
 use App\Http\Requests\StoreConcertRequest;
 use App\Http\Requests\UpdateConcertRequest;
@@ -15,12 +16,20 @@ use Illuminate\Http\Request;
 class ConcertController extends Controller
 {
 
-    public function buyConcert(Request $request){
+    public function buyConcert(BuyConcertTicketRequest $request){
         $concertId = $request->concert_id;
         $concert = Concert::findOrFail($concertId);
         $user = auth()->user();
+        $calculatedPrice = $concert->original_price * (1 - $concert->discount / 100);
+        $balance = $user->balance;
+        if($balance < $calculatedPrice){
+            return response()->json(['error'=> 'You do not have enough balance to buy this concert.'],300);
+        }
+        else{
+            $user->balance = $balance - $calculatedPrice;
         $concert->users()->attach($user->id);
-        return response()->json();
+        return response()->json(['message'=> 'Ticket for concert bought successfully.']);
+        }
     }
 
 
@@ -104,6 +113,13 @@ class ConcertController extends Controller
     {
         $user = auth()->user();
         $concerts = $user->concerts;
+        $concerts = $concerts->map(function ($concert) {
+            $concert->setRelation('artists', $concert->artists->map(function ($artist) {
+                unset($artist->pivot);
+                return $artist;
+            }));
+            return $concert;
+        });
         return response()->json($concerts);
     }
 
@@ -181,6 +197,7 @@ class ConcertController extends Controller
             $concert->is_outdoors = $request->is_outdoors;
             $concert->datetime = $request->datetime;
             $concert->original_price = $request->original_price;
+            $concert->title = $request->title;
 
             $concert->save();
 
