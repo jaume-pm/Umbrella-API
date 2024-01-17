@@ -16,19 +16,20 @@ use Illuminate\Http\Request;
 class ConcertController extends Controller
 {
 
-    public function buyConcert(BuyConcertTicketRequest $request){
+    public function buyConcert(BuyConcertTicketRequest $request)
+    {
         $concertId = $request->concert_id;
         $concert = Concert::findOrFail($concertId);
         $user = auth()->user();
         $calculatedPrice = $concert->original_price * (1 - $concert->discount / 100);
         $balance = $user->balance;
-        if($balance < $calculatedPrice){
-            return response()->json(['error'=> 'You do not have enough balance to buy this concert.'],300);
-        }
-        else{
-            $user->balance = $balance - $calculatedPrice;
-        $concert->users()->attach($user->id);
-        return response()->json(['message'=> 'Ticket for concert bought successfully.']);
+        if ($balance < $calculatedPrice) {
+            return response()->json(['error' => 'You do not have enough balance to buy this concert.'], 400);
+        } else {
+            $newBalance= $balance - $calculatedPrice;
+            $user->update(['balance' => $newBalance]);
+            $concert->users()->attach($user->id);
+            return response()->json(['message' => 'Ticket for concert bought successfully.']);
         }
     }
 
@@ -36,87 +37,87 @@ class ConcertController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-{
-    $query = Concert::query();
+    {
+        $query = Concert::query();
 
-    // Capacity filters  
-    if ($request->has('min_max_capacity')) {
-        $query->where('max_capacity', '>=', $request->min_max_capacity);
-    }
-    if ($request->has("max_max_capacity")) {
-        $query->where("max_capacity", '<=', $request->max_max_capacity);
-    }
-     //Title filter
-     if ($request->has('title')) {
-        $query->where('title', 'LIKE', '%' . $request->title . '%');
-    }
+        // Capacity filters  
+        if ($request->has('min_max_capacity')) {
+            $query->where('max_capacity', '>=', $request->min_max_capacity);
+        }
+        if ($request->has("max_max_capacity")) {
+            $query->where("max_capacity", '<=', $request->max_max_capacity);
+        }
+        //Title filter
+        if ($request->has('title')) {
+            $query->where('title', 'LIKE', '%' . $request->title . '%');
+        }
 
-    // Outdoors filter
-    if ($request->has('is_outdoors')) {
-        $query->where('is_outdoors', $request->is_outdoors);
-    }
+        // Outdoors filter
+        if ($request->has('is_outdoors')) {
+            $query->where('is_outdoors', $request->is_outdoors);
+        }
 
-    // Datetime filters
-    if ($request->has('min_datetime')) {
-        $query->where('datetime', '>=', $request->min_datetime);
-    }
-    if ($request->has('max_datetime')) {
-        $query->where('datetime', '<=', $request->max_datetime);
-    }
+        // Datetime filters
+        if ($request->has('min_datetime')) {
+            $query->where('datetime', '>=', $request->min_datetime);
+        }
+        if ($request->has('max_datetime')) {
+            $query->where('datetime', '<=', $request->max_datetime);
+        }
 
-    // Location filters
-    if ($request->has('country')) {
-        $query->where('country', $request->country);
-    }
-    if ($request->has('city')) {
-        $query->where('city', $request->city);
-    }
+        // Location filters
+        if ($request->has('country')) {
+            $query->where('country', $request->country);
+        }
+        if ($request->has('city')) {
+            $query->where('city', $request->city);
+        }
 
-    // Price filters
-    if ($request->has('min_original_price')) {
-        $query->where('original_price', '>=', $request->min_original_price);
-    }
-    if ($request->has('max_original_price')) {
-        $query->where('original_price', '<=', $request->max_original_price);
-    }
+        // Price filters
+        if ($request->has('min_original_price')) {
+            $query->where('original_price', '>=', $request->min_original_price);
+        }
+        if ($request->has('max_original_price')) {
+            $query->where('original_price', '<=', $request->max_original_price);
+        }
 
-    // Discount filters
-    if ($request->has('min_discount')) {
-        $query->where('discount', '>=', $request->min_discount);
-    }
-    if ($request->has('max_discount')) {
-        $query->where('discount', '<=', $request->max_discount);
-    }
+        // Discount filters
+        if ($request->has('min_discount')) {
+            $query->where('discount', '>=', $request->min_discount);
+        }
+        if ($request->has('max_discount')) {
+            $query->where('discount', '<=', $request->max_discount);
+        }
 
-    $concerts = $query->get();
+        $concerts = $query->get();
 
-    $concerts = $concerts->map(function ($concert) {
-        $concert->setRelation('artists', $concert->artists->map(function ($artist) {
-            unset($artist->pivot);
-            return $artist;
-        }));
-        return $concert;
-    });
-
-    // Calculated price filters
-    if ($request->has('min_price') || $request->has('max_price')) {
-        $concerts = $concerts->filter(function ($concert) use ($request) {
-            $calculatedPrice = $concert->original_price * (1 - $concert->discount / 100);
-            $minPrice = $request->min_price ?? 0;
-            $maxPrice = $request->max_price ?? PHP_INT_MAX;
-            return $calculatedPrice >= $minPrice && $calculatedPrice <= $maxPrice;
+        $concerts = $concerts->map(function ($concert) {
+            $concert->setRelation('artists', $concert->artists->map(function ($artist) {
+                unset($artist->pivot);
+                return $artist;
+            }));
+            return $concert;
         });
-    }
 
-    if ($request->has('artist')) {
-        $artistName = $request->artist;
-        $concerts = $concerts->filter(function ($concert) use ($artistName) {
-            return $concert->artists->contains('name', $artistName);
-        });
-    }
+        // Calculated price filters
+        if ($request->has('min_price') || $request->has('max_price')) {
+            $concerts = $concerts->filter(function ($concert) use ($request) {
+                $calculatedPrice = $concert->original_price * (1 - $concert->discount / 100);
+                $minPrice = $request->min_price ?? 0;
+                $maxPrice = $request->max_price ?? PHP_INT_MAX;
+                return $calculatedPrice >= $minPrice && $calculatedPrice <= $maxPrice;
+            });
+        }
 
-    return response()->json($concerts);
-}
+        if ($request->has('artist')) {
+            $artistName = $request->artist;
+            $concerts = $concerts->filter(function ($concert) use ($artistName) {
+                return $concert->artists->contains('name', $artistName);
+            });
+        }
+
+        return response()->json($concerts);
+    }
 
     public function indexUserConcerts()
     {
@@ -140,7 +141,8 @@ class ConcertController extends Controller
         //
     }
 
-    public function coordinates(StoreConcertRequest $request){
+    public function coordinates(StoreConcertRequest $request)
+    {
         $address = $request->address;
         $country = $request->country;
         $city = $request->city;
@@ -151,18 +153,19 @@ class ConcertController extends Controller
         return response()->json($coordinates);
     }
 
-    public function updateConcertDiscounts(){
+    public function updateConcertDiscounts()
+    {
         $daysForDiscounts = env('DAYS_FOR_DISCOUNTS');
 
         // Get the current date and time
         $now = Carbon::now();
         $threeDaysFromNow = $now->copy()->addDays($daysForDiscounts);
         $concerts = Concert::whereBetween('datetime', [$now, $threeDaysFromNow])
-        ->where('is_outdoors', true)
-        ->get();
+            ->where('is_outdoors', true)
+            ->get();
 
         foreach ($concerts as $concert) {
-            
+
             $discount = OpenMeteoApi::getDiscount($concert);
 
             $updateData = [
@@ -173,22 +176,23 @@ class ConcertController extends Controller
         }
     }
 
-    private function getConcertDiscount(Concert $concert) {
+    private function getConcertDiscount(Concert $concert)
+    {
         $daysForDiscounts = env('DAYS_FOR_DISCOUNTS');
-    
+
         $now = Carbon::now();
         $threeDaysFromNow = $now->copy()->addDays($daysForDiscounts);
-    
+
         // Check if the concert datetime is between now and $daysForDiscounts days from now
         if ($concert->datetime >= $now && $concert->datetime <= $threeDaysFromNow) {
             // Calculate and return the discount
             return OpenMeteoApi::getDiscount($concert);
         }
-    
+
         // Return null if the concert is not within the specified timeframe
         return 0;
     }
-    
+
 
 
 
@@ -242,20 +246,21 @@ class ConcertController extends Controller
         }
     }
 
-    public function addArtist(StoreConcertArtistRequest $request) {
+    public function addArtist(StoreConcertArtistRequest $request)
+    {
         $artistName = $request->artist_name;
         $concertId = $request->concert_id;
-    
+
         // Find the concert and artist
         $concert = Concert::findOrFail($concertId);
         $artist = Artist::where('name', $artistName)->first();
-    
+
         if ($concert && $artist) {
             // Check if the artist is not already associated with the concert
             if (!$concert->artists()->where('artist_name', $artistName)->exists()) {
                 // Attach the artist to the concert
                 $concert->artists()->attach($artist->name);
-    
+
                 return response()->json([
                     'message' => 'Artist added successfully to the concert',
                 ]);
@@ -270,7 +275,7 @@ class ConcertController extends Controller
             ], 404);
         }
     }
-    
+
 
     /**
      * Display the specified resource.

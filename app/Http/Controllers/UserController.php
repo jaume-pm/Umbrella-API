@@ -19,6 +19,11 @@ class UserController extends Controller
         $user = auth()->user();
         $newBalance = $user->balance + $request->balance;
         $user->update(['balance' => $newBalance]);
-        return response()->json(["new_balance", $newBalance], 200);
+        return response()->json(["balance" => $newBalance], 200);
+    }
+
+    public function getBalance(Request $request){
+        $user = auth()->user();
+        return response()->json(["balance" => $user->balance], 200);
     }
 }
