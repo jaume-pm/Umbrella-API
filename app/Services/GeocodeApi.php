@@ -12,9 +12,9 @@ class GeocodeApi
     {
         $address = str_replace(' ', '+', $fullAddress);
         $call = "https://geocode.maps.co/search?q={$address}&api_key=" . self::$apiKey;
-        $response = Http::get("". $call);
+        $response = Http::get("".$call);
 
-        if ($response->successful()) {
+        if (!empty($response->json()) && $response->json() !== []) {
             $data = $response->json();
             $latitude = $data[0]['lat'];
             $longitude = $data[0]['lon'];

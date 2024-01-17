@@ -31,6 +31,7 @@ class StoreConcertRequest extends FormRequest
             'city' => 'required|string|max:255',
             'datetime' => 'required|date_format:Y-m-d H:i:s',
             'original_price' => 'required|numeric|min:0',
+            'max_discount' => 'required|numeric|min:0|max:100'
         ];
     }
 }

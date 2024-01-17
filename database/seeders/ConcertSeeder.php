@@ -20,9 +20,10 @@ class ConcertSeeder extends Seeder
             'city' => 'Barcelona',
             'country' => 'Spain',
             'datetime' => now()->addDays(1),
-            'is_outdoors' => false,
+            'is_outdoors' => true,
             'latitude' => 41.3638,
             'longitude' => 2.1527,
+            'max_discount' => 50.00,
         ]);
 
         Concert::factory()->create([
@@ -34,6 +35,7 @@ class ConcertSeeder extends Seeder
             'is_outdoors' => false,
             'latitude' => 44.8975,
             'longitude' => -0.5619,
+            'max_discount' => 50.00,
         ]);
 
         Concert::factory()->create([
@@ -45,6 +47,7 @@ class ConcertSeeder extends Seeder
             'is_outdoors' => false,
             'latitude' => 45.4263,
             'longitude' => 28.0365,
+            'max_discount' => 50.00,
         ]);
 
         // USA Venues
@@ -57,6 +60,7 @@ class ConcertSeeder extends Seeder
             'is_outdoors' => true,
             'latitude' => 42.3662,
             'longitude' => -71.0621,
+            'max_discount' => 50.00,
         ]);
 
         Concert::factory()->create([
@@ -68,6 +72,7 @@ class ConcertSeeder extends Seeder
             'is_outdoors' => true,
             'latitude' => 25.7814,
             'longitude' => -80.1870,
+            'max_discount' => 50.00,
         ]);
 
         // Locations likely to experience rain in early January
@@ -80,8 +85,8 @@ class ConcertSeeder extends Seeder
             'is_outdoors' => true,
             'latitude' => -22.9122,
             'longitude' => -43.2302,
+            'max_discount' => 50.00,
         ]);
-
 
         Concert::factory()->create([
             'title' => 'Singapore Sonic Soiree',
@@ -92,6 +97,7 @@ class ConcertSeeder extends Seeder
             'is_outdoors' => true,
             'latitude' => 1.3025,
             'longitude' => 103.8754,
+            'max_discount' => 50.00,
         ]);
 
         // Concert in Donald, VIC, Australia
@@ -100,10 +106,11 @@ class ConcertSeeder extends Seeder
             'address' => '25-27 Blair St',
             'city' => 'Donald',
             'country' => 'Australia',
-            'datetime' => Carbon::create(2024, 1, 2, 8, 0, 0, 'GMT'),
+            'datetime' => now()->addDays(1),
             'is_outdoors' => true,
             'latitude' => -36.375,
             'longitude' => 143.0,
+            'max_discount' => 50.00,
         ]);
 
         Concert::factory()->create([
@@ -115,6 +122,56 @@ class ConcertSeeder extends Seeder
             'is_outdoors' => true,
             'latitude' => -6.2215,
             'longitude' => 106.8034,
+            'max_discount' => 50.00,
+        ]);
+        // Manaus, Brazil - Outdoors
+        Concert::factory()->create([
+            'title' => 'Manaus Rainforest Rhythms',
+            'address' => 'Avenida Eduardo Ribeiro',
+            'city' => 'Manaus',
+            'country' => 'Brazil',
+            'datetime' => now()->addDays(1),
+            'is_outdoors' => true,
+            'latitude' => -3.1190,
+            'longitude' => -60.0217,
+            'max_discount' => 50.00,
+        ]);
+
+        // Hilo, Hawaii, USA - Outdoors
+        Concert::factory()->create([
+            'title' => 'Hilo Tropical Tunes',
+            'address' => '1 Banyan Drive',
+            'city' => 'Hilo',
+            'country' => 'United States',
+            'datetime' => now()->addDays(2),
+            'is_outdoors' => true,
+            'latitude' => 19.7297,
+            'longitude' => -155.0900,
+            'max_discount' => 50.00,
+        ]);
+
+        Concert::factory()->create([
+            'title' => 'France Melodies',
+            'address' => 'Jalan Tunku Abdul Rahman',
+            'city' => 'Kuching',
+            'country' => 'France',
+            'datetime' => Carbon::create(2024, 1, 17, 18, 0, 0),
+            'is_outdoors' => true,
+            'latitude' => 43.5782263,
+            'longitude' => -1.2736303,
+            'max_discount' => 50.00,
+        ]);
+
+        Concert::factory()->create([
+            'title' => 'A Coruña Open Air Concert',
+            'address' => 'Sample Address',
+            'city' => 'A Coruña',
+            'country' => 'Spain',
+            'datetime' => now()->setDate(2024, 1, 17)->setTime(18, 0), // Set the datetime to January 17, 2024, at 18:00
+            'is_outdoors' => true,
+            'latitude' => 43.3623,
+            'longitude' => -8.4115,
+            'max_discount' => 50.00,
         ]);
     }
 }

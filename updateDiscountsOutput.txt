@@ -1,0 +1,1 @@
+[37;41mAn error occurred: Method App\Http\Controllers\ConcertController::updateConcertDiscounts does not exist.[39;49m

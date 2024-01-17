@@ -32,22 +32,23 @@ class ConcertController extends Controller
         }
     }
 
-
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
 {
-    self::updateConcertDiscounts(); // Update concert discounts first
-
     $query = Concert::query();
 
-    // Capacity filters
+    // Capacity filters  
     if ($request->has('min_max_capacity')) {
         $query->where('max_capacity', '>=', $request->min_max_capacity);
     }
-    if ($request->has('max_max_capacity')) {
-        $query->where('max_capacity', '<=', $request->max_max_capacity);
+    if ($request->has("max_max_capacity")) {
+        $query->where("max_capacity", '<=', $request->max_max_capacity);
+    }
+     //Title filter
+     if ($request->has('title')) {
+        $query->where('title', 'LIKE', '%' . $request->title . '%');
     }
 
     // Outdoors filter
@@ -106,6 +107,14 @@ class ConcertController extends Controller
             return $calculatedPrice >= $minPrice && $calculatedPrice <= $maxPrice;
         });
     }
+
+    if ($request->has('artist')) {
+        $artistName = $request->artist;
+        $concerts = $concerts->filter(function ($concert) use ($artistName) {
+            return $concert->artists->contains('name', $artistName);
+        });
+    }
+
     return response()->json($concerts);
 }
 
@@ -142,7 +151,7 @@ class ConcertController extends Controller
         return response()->json($coordinates);
     }
 
-    private function updateConcertDiscounts(){
+    public function updateConcertDiscounts(){
         $daysForDiscounts = env('DAYS_FOR_DISCOUNTS');
 
         // Get the current date and time
@@ -163,6 +172,23 @@ class ConcertController extends Controller
             $this->update(new UpdateConcertRequest($updateData), $concert);
         }
     }
+
+    private function getConcertDiscount(Concert $concert) {
+        $daysForDiscounts = env('DAYS_FOR_DISCOUNTS');
+    
+        $now = Carbon::now();
+        $threeDaysFromNow = $now->copy()->addDays($daysForDiscounts);
+    
+        // Check if the concert datetime is between now and $daysForDiscounts days from now
+        if ($concert->datetime >= $now && $concert->datetime <= $threeDaysFromNow) {
+            // Calculate and return the discount
+            return OpenMeteoApi::getDiscount($concert);
+        }
+    
+        // Return null if the concert is not within the specified timeframe
+        return 0;
+    }
+    
 
 
 
@@ -199,6 +225,11 @@ class ConcertController extends Controller
             $concert->original_price = $request->original_price;
             $concert->title = $request->title;
 
+            $concert->max_discount = $request->max_discount;
+
+            $discount = self::getConcertDiscount($concert);
+            $concert->discount = $discount;
+
             $concert->save();
 
             return response()->json([
@@ -207,28 +238,39 @@ class ConcertController extends Controller
         } else {
             return response()->json([
                 'error' => $coordinates['error'] ?? 'Unknown error',
-            ], 422);
+            ], 404);
         }
     }
 
     public function addArtist(StoreConcertArtistRequest $request) {
-        $artistId = $request->artist_id;
+        $artistName = $request->artist_name;
         $concertId = $request->concert_id;
-        $concert = Concert::findOrFail($concertId);
     
-        $artist = Artist::find($artistId);
+        // Find the concert and artist
+        $concert = Concert::findOrFail($concertId);
+        $artist = Artist::where('name', $artistName)->first();
     
         if ($concert && $artist) {
-            $concert->artists()->attach($artist->id);
-            return response()->json([
-                'message' => 'Artist added successfully to the concert',
-            ]);
+            // Check if the artist is not already associated with the concert
+            if (!$concert->artists()->where('artist_name', $artistName)->exists()) {
+                // Attach the artist to the concert
+                $concert->artists()->attach($artist->name);
+    
+                return response()->json([
+                    'message' => 'Artist added successfully to the concert',
+                ]);
+            } else {
+                return response()->json([
+                    'message' => 'Artist is already associated with the concert',
+                ], 422);
+            }
         } else {
             return response()->json([
-                'message' => 'Artist added successfully to the concert',
-            ]);
+                'message' => 'Concert or artist not found',
+            ], 404);
         }
     }
+    
 
     /**
      * Display the specified resource.

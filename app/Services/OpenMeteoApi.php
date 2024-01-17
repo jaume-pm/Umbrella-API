@@ -45,7 +45,7 @@ class OpenMeteoApi
 
     public static function getDiscount(Concert $concert)
 {
-    $maxDiscount = env('MAX_DISCOUNT');
+    $maxDiscount = $concert->max_discount;
     $precipitation = OpenMeteoApi::getPrecipitation($concert);
 
     // Normalizing the precipitation value

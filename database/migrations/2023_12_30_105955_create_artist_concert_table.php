@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('artist_concert', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('artist_id');
+            $table->string('artist_name');
             $table->unsignedBigInteger('concert_id');
             $table->timestamps();
 
             // Define foreign keys
-            $table->foreign('artist_id')->references('id')->on('artists')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('artist_name')->references('name')->on('artists')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('concert_id')->references('id')->on('concerts')->onDelete('cascade')->onUpdate('cascade');
         });
     }

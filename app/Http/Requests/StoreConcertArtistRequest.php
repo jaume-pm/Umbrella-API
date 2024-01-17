@@ -23,7 +23,7 @@ class StoreConcertArtistRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'artist_id' => 'required|integer|min:1',
+            'artist_name' => 'required',
         ];
     }
 }
