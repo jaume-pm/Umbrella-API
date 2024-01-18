@@ -39,7 +39,7 @@ class AuthController extends Controller
                 $token = $user->createToken('auth_token')->plainTextToken;
                 $role = $user->role;
 
-                return response()->json(['token' => $token, 'role' => 'user', 'name' => $user->name], 200);
+                return response()->json(['token' => $token, 'role' => $role, 'name' => $user->name], 200);
             } else {
                 throw ValidationException::withMessages(['message' => 'Invalid credentials']);
             }

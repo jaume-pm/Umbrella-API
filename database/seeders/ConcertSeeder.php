@@ -173,5 +173,20 @@ class ConcertSeeder extends Seeder
             'longitude' => -8.4115,
             'max_discount' => 50.00,
         ]);
+
+        Concert::factory()->create([
+            'title' => 'Seville Symphony Showcase',
+            'address' => 'Real Alcázar of Seville, Patio de Banderas, s/n, 41004 Sevilla, Spain',
+            'city' => 'Seville',
+            'country' => 'Spain',
+            'datetime' => now()->addDays(1),
+            'is_outdoors' => true,
+            'latitude' => 37.3841,  // Replace with the actual latitude for Real Alcázar
+            'longitude' => -5.9821,  // Replace with the actual longitude for Real Alcázar
+            'max_discount' => 50.00,
+        ]);
+        
+
+
     }
 }
