@@ -185,8 +185,18 @@ class ConcertSeeder extends Seeder
             'longitude' => -5.9821,  // Replace with the actual longitude for Real Alcázar
             'max_discount' => 50.00,
         ]);
-        
 
-
+        // Riedlingen, Germany - Outdoors
+        Concert::factory()->create([
+            'title' => 'Riedlingen Rock Fest',
+            'address' => 'Hauptstraße 1',
+            'city' => 'Riedlingen',
+            'country' => 'Germany',
+            'datetime' => now()->addMinutes(30),
+            'is_outdoors' => true,
+            'latitude' => 48.2173,
+            'longitude' => 9.4763,
+            'max_discount' => 50.00,
+        ]);
     }
 }

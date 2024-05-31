@@ -20,9 +20,9 @@ class ArtistConcertSeeder extends Seeder
         $artists = Artist::all();
     
         foreach ($concerts as $concert) {
-            // Determine whether to add artists to this concert (20% chance)
-            if (rand(1, 5) !== 1) { // 1/5 chance (20%)
-                $randomArtists = $artists->random(rand(0, 3)); // You can adjust the number of artists per concert
+            // Determine whether to add artists to this concert (50% chance)
+            if (rand(1, 2) !== 1) {
+                $randomArtists = $artists->random(rand(0, 3));
     
                 foreach ($randomArtists as $artist) {
                     DB::table('artist_concert')->insert([
