@@ -12,7 +12,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('concert:update-discounts')->hourly()->sendOutputTo("/home/pollito/Desktop/PMUD/Umbrella/app/Console/Outputs/updateDiscountsOutput.txt");
+        $schedule->command('concert:update-discounts')->hourly()->sendOutputTo("/home/UpdateConcertsOutput.txt");
     }
 
     /**
